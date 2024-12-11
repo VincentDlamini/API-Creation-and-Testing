@@ -1,0 +1,1837 @@
+{
+	"info": {
+		"_postman_id": "5f9e6e77-9425-4b89-8f95-5e24d9fd38e2",
+		"name": "vin_online_shopping_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39812014"
+	},
+	"item": [
+		{
+			"name": "Add Customers",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let randomNum = Math.floor((Math.random() * 100) + 1);\r",
+							"let randomString = Math.random().toString(36).substring(2);\r",
+							"\r",
+							"pm.environment.set(\"firstName\", randomString);\r",
+							"pm.environment.set(\"lastName\", randomString);\r",
+							"pm.environment.set(\"email\", randomString + \"@yahoo.com\");\r",
+							"pm.environment.set(\"password\", randomString + \"@\" + randomNum);\r",
+							"pm.environment.set(\"address\", randomNum + \" \" + randomString);\r",
+							"pm.environment.set(\"city\", randomString);\r",
+							"pm.environment.set(\"province\", randomString);\r",
+							"pm.environment.set(\"postalCode\", randomNum);\r",
+							"pm.environment.set(\"country\", randomString);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json; charset=utf-8\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json(); \r",
+							"pm.environment.set(\"customerId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"address\": \"{{address}}\",\r\n    \"city\": \"{{city}}\",\r\n    \"province\": \"{{province}}\",\r\n    \"postalCode\": \"{{postalCode}}\",\r\n    \"country\": \"{{country}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}customers",
+					"host": [
+						"{{vin_url_global}}customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"firstName\": \"Tebogo\",\r\n        \"lastName\": \"Zondo\",\r\n        \"email\": \"TZ@gmail.com\",\r\n        \"password\": \"TZ@123\",\r\n        \"address\": \"123 John Doe Street\",\r\n        \"city\": \"Manchester\",\r\n        \"province\": \"London\",\r\n        \"postalCode\": 56358,\r\n        \"country\": \"England\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}customers/2",
+					"host": [
+						"{{vin_url_global}}customers"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Empty Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.expect(pm.response).to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}customers/2",
+					"host": [
+						"{{vin_url_global}}customers"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"// Validating JSON Schema\r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": { \"type\": \"integer\" },\r",
+							"        \"firstName\": { \"type\": \"string\" },\r",
+							"        \"lastName\": { \"type\": \"string\" },\r",
+							"        \"email\": { \"type\": \"string\" },\r",
+							"        \"password\": { \"type\": \"string\" },\r",
+							"        \"address\": { \"type\": \"string\" },\r",
+							"        \"city\": { \"type\": \"string\" },\r",
+							"        \"province\": { \"type\": \"string\" },\r",
+							"        \"postalCode\": { \"type\": \"integer\" },\r",
+							"        \"country\": { \"type\": \"string\" }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"firstName\",\r",
+							"        \"lastName\",\r",
+							"        \"email\",\r",
+							"        \"password\",\r",
+							"        \"address\",\r",
+							"        \"city\",\r",
+							"        \"province\",\r",
+							"        \"postalCode\",\r",
+							"        \"country\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\", () => {\r",
+							"    let jsonData = pm.response.json(); \r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}customers",
+					"host": [
+						"{{vin_url_global}}customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"firstName\");\r",
+							"pm.environment.unset(\"lastName\");\r",
+							"pm.environment.unset(\"email\");\r",
+							"pm.environment.unset(\"password\");\r",
+							"pm.environment.unset(\"address\");\r",
+							"pm.environment.unset(\"city\");\r",
+							"pm.environment.unset(\"province\");\r",
+							"pm.environment.unset(\"postalCode\");\r",
+							"pm.environment.unset(\"country\");\r",
+							"pm.environment.unset(\"customerId\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}customers/{{customerId}}",
+					"host": [
+						"{{vin_url_global}}customers"
+					],
+					"path": [
+						"{{customerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let randomNum = Math.floor((Math.random() * 100) + 1);\r",
+							"let randomString = Math.random().toString(36).substring(2);\r",
+							"\r",
+							"    pm.environment.set(\"productName\", randomString);\r",
+							"    pm.environment.set(\"productDescription\", randomString);\r",
+							"    pm.environment.set(\"price\", 5820.55);\r",
+							"    pm.environment.set(\"quantityOnHand\", 15);\r",
+							"    pm.environment.set(\"categoryId\", 302);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json; charset=utf-8\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"productId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productName\": \"{{productName}}\",\r\n    \"productDescription\": \"{{productDescription}}\",\r\n    \"price\": 20.55,\r\n    \"quantityOnHand\": 100,\r\n    \"categoryId\": 302\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}products",
+					"host": [
+						"{{vin_url_global}}products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productName\": \"Honor Band 9\",\r\n    \"productDescription\": \"Black Band\",\r\n    \"price\": 2819.55,\r\n    \"quantityOnHand\": 20,\r\n    \"categoryId\": 302\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}products/2",
+					"host": [
+						"{{vin_url_global}}products"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Empty Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.expect(pm.response).to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}products/2",
+					"host": [
+						"{{vin_url_global}}products"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"productName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"productDescription\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"price\": {\r",
+							"          \"type\": \"number\"\r",
+							"        },\r",
+							"        \"quantityOnHand\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"categoryId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"productName\",\r",
+							"        \"productDescription\",\r",
+							"        \"price\",\r",
+							"        \"quantityOnHand\",\r",
+							"        \"categoryId\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\", () => {\r",
+							"    let jsonData = pm.response.json(); \r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}products",
+					"host": [
+						"{{vin_url_global}}products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.environment.unset(\"productName\");\r",
+							"pm.environment.unset(\"productDescription\");\r",
+							"pm.environment.unset(\"price\");\r",
+							"pm.environment.unset(\"quantityOnHand\");\r",
+							"pm.environment.unset(\"categoryId\");\r",
+							"pm.environment.unset(\"productId\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}products/{{productId}}",
+					"host": [
+						"{{vin_url_global}}products"
+					],
+					"path": [
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Categories",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let randomNum = Math.floor((Math.random() * 100) + 1);\r",
+							"let randomString = Math.random().toString(36).substring(2);\r",
+							"\r",
+							"pm.environment.set(\"categoryName\", randomString);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"categoriesId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"categoryName\": \"{{categoryName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}categories",
+					"host": [
+						"{{vin_url_global}}categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Categories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"categoryName\":\"Smart Watches\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}categories/3",
+					"host": [
+						"{{vin_url_global}}categories"
+					],
+					"path": [
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Empty Categories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.expect(pm.response).to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}categories/3",
+					"host": [
+						"{{vin_url_global}}categories"
+					],
+					"path": [
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Categories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"categoryName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"categoryName\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\", () => {\r",
+							"    let jsonData = pm.response.json(); \r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}categories",
+					"host": [
+						"{{vin_url_global}}categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"categoryName\");\r",
+							"pm.environment.unset(\"categoriesId\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}categories/{{categoriesId}}",
+					"host": [
+						"{{vin_url_global}}categories"
+					],
+					"path": [
+						"{{categoriesId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"ordersId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customerId\": 100,\r\n    \"orderDate\": \"2024-11-18 00:07:13\",\r\n    \"totalCost\": 100.28\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}orders",
+					"host": [
+						"{{vin_url_global}}orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"customerId\": 100,\r\n        \"orderDate\": \"2024-11-18 00:07:13\",\r\n        \"totalCost\": 3106.65\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}orders/1",
+					"host": [
+						"{{vin_url_global}}orders"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Order with missing field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.expect(pm.response).to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        //Missing field\r\n        \"orderDate\": \"2024-11-18 00:07:13\",\r\n        \"totalCost\": 3106.65\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}orders/1",
+					"host": [
+						"{{vin_url_global}}orders"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"customerId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"orderDate\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"totalCost\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"customerId\",\r",
+							"        \"orderDate\",\r",
+							"        \"totalCost\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\", () => {\r",
+							"    let jsonData = pm.response.json(); \r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}orders",
+					"host": [
+						"{{vin_url_global}}orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"ordersId\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}orders/{{ordersId}}",
+					"host": [
+						"{{vin_url_global}}orders"
+					],
+					"path": [
+						"{{ordersId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Ordered Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"orderedItemsId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 401,\r\n    \"productId\": 201,\r\n    \"quantity\": 2,\r\n    \"unitPrice\": 5645.25\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}orderedItems",
+					"host": [
+						"{{vin_url_global}}orderedItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Ordered Item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 401,\r\n    \"productId\": 200,\r\n    \"quantity\": 2,\r\n    \"unitPrice\": 16645.25\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}orderedItems/1",
+					"host": [
+						"{{vin_url_global}}orderedItems"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Ordered Item Missing Field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.expect(pm.response).to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 401,\r\n    \"productId\": 200,\r\n    \"quantity\": 2\r\n    //Missing field\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}orderedItems/1",
+					"host": [
+						"{{vin_url_global}}orderedItems"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ordered Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"orderId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"productId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"quantity\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"unitPrice\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"orderId\",\r",
+							"        \"productId\",\r",
+							"        \"quantity\",\r",
+							"        \"unitPrice\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\", () => {\r",
+							"    let jsonData = pm.response.json(); \r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}orderedItems",
+					"host": [
+						"{{vin_url_global}}orderedItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Ordered Item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"orderedItemsId\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}orderedItems/{{orderedItemsId}}",
+					"host": [
+						"{{vin_url_global}}orderedItems"
+					],
+					"path": [
+						"{{orderedItemsId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"paymentId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 401,\r\n    \"paymentMethod\": \"Credit Card\",\r\n    \"paymentDate\": \"2024-11-18 00:07:13\",\r\n    \"amount\": 4515.24\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}payments",
+					"host": [
+						"{{vin_url_global}}payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 400,\r\n    \"paymentMethod\": \"EFT Transfer\",\r\n    \"paymentDate\": \"2024-11-18 00:07:13\",\r\n    \"amount\": 4150.24\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}payments/1",
+					"host": [
+						"{{vin_url_global}}payments"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Payment Missing Field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.expect(pm.response).to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 400,\r\n    \"paymentMethod\": \"EFT Transfer\",\r\n    //Missing field\r\n    \"amount\": 4150.24\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{vin_url_global}}payments/1",
+					"host": [
+						"{{vin_url_global}}payments"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Payments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"orderId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"paymentMethod\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"paymentDate\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"amount\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"orderId\",\r",
+							"        \"paymentMethod\",\r",
+							"        \"paymentDate\",\r",
+							"        \"amount\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\", () => {\r",
+							"    let jsonData = pm.response.json(); \r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}payments",
+					"host": [
+						"{{vin_url_global}}payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status (200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"    pm.response.to.have.header (\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header contains application/json\", () => {\r",
+							" pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookies are absent\", () => {\r",
+							"    pm.expect(pm.cookies.has(\"language\")).to.be.false;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Reponse time is less than 200ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below (200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"paymentId\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{vin_url_global}}payments/{{paymentId}}",
+					"host": [
+						"{{vin_url_global}}payments"
+					],
+					"path": [
+						"{{paymentId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
